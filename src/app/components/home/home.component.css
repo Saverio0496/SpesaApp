@@ -1,0 +1,7 @@
+.container {
+  height: 100vh;
+  background-color: #ffffff;
+  margin-top: 100px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}

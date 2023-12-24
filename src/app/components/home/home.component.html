@@ -1,0 +1,6 @@
+<div class="container">
+  <app-header></app-header>
+  <div *ngFor="let negozio of negozi">
+    <button (click)="apriNegozio(negozio)">{{negozio?.nome}}</button>
+  </div>
+</div>
