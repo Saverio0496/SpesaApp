@@ -1,1 +1,30 @@
 <p>{{negozio?.nome}}</p>
+
+<form [formGroup]="listaSpesaForm" (ngSubmit)="aggiungiElemento()">
+  <div>
+    <label for="nomeProdotto">Nome Prodotto</label>
+    <input type="text" id="nomeProdotto" formControlName="nomeProdotto">
+    <div *ngIf="listaSpesaForm.get('nomeProdotto')?.invalid && listaSpesaForm.get('nomeProdotto')?.touched">
+      Il nome del prodotto da comprare è obbligatorio!
+    </div>
+  </div>
+
+  <div>
+    <label for="quantita">Quantità</label>
+    <input type="number" id="quantita" formControlName="quantita">
+    <div *ngIf="listaSpesaForm.get('quantita')?.invalid && listaSpesaForm.get('quantita')?.touched">
+      Inserisci una quantità valida (minimo 1)!
+    </div>
+  </div>
+
+  <button type="submit">Aggiungi alla lista</button>
+</form>
+
+<div *ngIf="listaSpesa.length > 0">
+  <h3>Lista della spesa</h3>
+  <ul>
+    <li *ngFor="let elemento of listaSpesa">
+      {{ elemento.nomeProdotto }} - Quantità: {{ elemento.quantita }}
+    </li>
+  </ul>
+</div>

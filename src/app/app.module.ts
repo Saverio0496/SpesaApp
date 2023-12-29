@@ -12,6 +12,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environments";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -20,15 +21,17 @@ import {environment} from "../environments/environments";
     HomeComponent,
     NegozioComponent
   ],
-  imports: [
-    BrowserModule,
-    RouterModule,
-    AppRoutingModule,
-    CommonModule,
-    MatIconModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule
-  ],
+    imports: [
+        BrowserModule,
+        RouterModule,
+        AppRoutingModule,
+        CommonModule,
+        MatIconModule,
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFirestoreModule,
+        ReactiveFormsModule,
+        FormsModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })
