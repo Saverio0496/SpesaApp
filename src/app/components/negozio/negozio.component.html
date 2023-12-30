@@ -1,30 +1,41 @@
-<p>{{negozio?.nome}}</p>
-
-<form [formGroup]="listaSpesaForm" (ngSubmit)="aggiungiElemento()">
+<div class="container">
+  <app-header [titolo]="negozio?.nome" [nomePerLogo]="negozio?.nome" [funzionalitaHome]="true" [numeroProdottiDaComprare]="numeroProdottiDaComprare"></app-header>
   <div>
-    <label for="nomeProdotto">Nome Prodotto</label>
-    <input type="text" id="nomeProdotto" formControlName="nomeProdotto">
-    <div *ngIf="listaSpesaForm.get('nomeProdotto')?.invalid && listaSpesaForm.get('nomeProdotto')?.touched">
-      Il nome del prodotto da comprare è obbligatorio!
+    <form [formGroup]="listaSpesaForm" (ngSubmit)="aggiungiElemento()">
+      <div style="display: flex; flex-direction: column">
+        <label for="nomeProdotto">Nome Prodotto</label>
+        <input type="text" id="nomeProdotto" formControlName="nomeProdotto">
+        <div class="error-message" *ngIf="listaSpesaForm.get('nomeProdotto')?.invalid && listaSpesaForm.get('nomeProdotto')?.touched">
+          Il nome del prodotto da comprare è obbligatorio!
+        </div>
+      </div>
+
+      <pre>{{ listaSpesaForm.valid | json }}</pre>
+
+      <div style="display: flex; flex-direction: column">
+        <label for="quantita">Quantità</label>
+        <input type="number" id="quantita" formControlName="quantita" min="1">
+        <div class="error-message" *ngIf="listaSpesaForm.get('quantita')?.invalid && listaSpesaForm.get('quantita')?.touched">
+          Inserisci una quantità valida (minimo 1)!
+        </div>
+      </div>
+
+      <button type="submit">Aggiungi alla lista</button>
+    </form>
+
+    <div *ngIf="listaSpesa.length > 0">
+      <h3>Lista della spesa</h3>
+      <ul class="lista-spesa">
+        <li *ngFor="let elemento of listaSpesa; let i = index" class="elemento-spesa">
+          <span class="nome-prodotto" [ngClass]="{ 'comprato': elemento.comprato }">{{ elemento.nomeProdotto }} ( x{{elemento.quantita}} )</span>
+          <div class="azioni">
+            <button (click)="toggleStatoElemento(i)">
+              {{ elemento.comprato ? 'Da comprare' : 'Comprato' }}
+            </button>
+            <button (click)="rimuoviElemento(i)">Elimina</button>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
-
-  <div>
-    <label for="quantita">Quantità</label>
-    <input type="number" id="quantita" formControlName="quantita">
-    <div *ngIf="listaSpesaForm.get('quantita')?.invalid && listaSpesaForm.get('quantita')?.touched">
-      Inserisci una quantità valida (minimo 1)!
-    </div>
-  </div>
-
-  <button type="submit">Aggiungi alla lista</button>
-</form>
-
-<div *ngIf="listaSpesa.length > 0">
-  <h3>Lista della spesa</h3>
-  <ul>
-    <li *ngFor="let elemento of listaSpesa">
-      {{ elemento.nomeProdotto }} - Quantità: {{ elemento.quantita }}
-    </li>
-  </ul>
 </div>

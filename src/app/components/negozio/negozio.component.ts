@@ -1,8 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
 import {NegozioDTO} from "../../dto/negozioDTO";
-import {map} from "rxjs";
-import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ListaSpesaDTO} from "../../dto/listaSpesaDTO";
 
@@ -16,16 +13,19 @@ export class NegozioComponent implements OnInit{
   negozio: NegozioDTO | undefined;
   listaSpesaForm: FormGroup;
   listaSpesa: ListaSpesaDTO[] = [];
+  numeroProdottiDaComprare: number = 0;
 
   constructor(private formBuilder: FormBuilder) {
     this.listaSpesaForm = this.formBuilder.group({
       nomeProdotto: ['', Validators.required],
-      quantita: [1, Validators.min(1)]
+      quantita: [1, Validators.required],
+      comprato: [false]
     });
   }
 
   ngOnInit(): void {
     this.negozio = history.state.negozio as NegozioDTO;
+    this.numeroProdottiDaComprare = this.listaSpesa.filter(item => !item.comprato).length;
   }
 
   aggiungiElemento() {
@@ -33,22 +33,31 @@ export class NegozioComponent implements OnInit{
       const nomeProdotto = this.listaSpesaForm.value.nomeProdotto;
       const quantita = this.listaSpesaForm.value.quantita;
 
-      // Adesso puoi utilizzare questi valori come preferisci,
-      // ad esempio, puoi stamparli in console per simulare l'aggiunta alla lista della spesa
-      console.log('Nome Prodotto:', nomeProdotto);
-      console.log('Quantità:', quantita);
-
       const oggettoDaAggiungere: ListaSpesaDTO = {
         nomeProdotto: nomeProdotto,
-        quantita: quantita
+        quantita: quantita,
+        comprato: false
       }
       // Aggiungi l'elemento alla lista della spesa
       this.listaSpesa.push(oggettoDaAggiungere);
 
       // Resetta i campi di input dopo l'aggiunta
       this.listaSpesaForm.reset();
+      this.listaSpesaForm.get('quantita')?.setValue(1);
+
+      this.numeroProdottiDaComprare = this.listaSpesa.filter(item => !item.comprato).length;
 
     }
+  }
+
+  toggleStatoElemento(index: number) {
+    this.listaSpesa[index].comprato = !this.listaSpesa[index].comprato;
+    this.numeroProdottiDaComprare = this.listaSpesa.filter(item => !item.comprato).length;
+  }
+
+  rimuoviElemento(index: number) {
+    this.listaSpesa.splice(index, 1);
+    this.numeroProdottiDaComprare = this.listaSpesa.filter(item => !item.comprato).length;
   }
 
 }

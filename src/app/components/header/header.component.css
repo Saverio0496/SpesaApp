@@ -16,3 +16,41 @@
   font-size: 30px;
   margin-right: 10px;
 }
+
+img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.torna-home {
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #4a90e2;
+  color: white;
+  transition: background-color 0.3s ease;
+  justify-content: space-between;
+  font-size: 14px; /* Modifica la dimensione del testo */
+  margin-left: 16px; /* Aggiungi spazio a sinistra per separare dal titolo */
+}
+
+.torna-home:hover {
+  background-color: #357ebd;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+}
+
+button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px #0086ff solid;
+  background-color: #4a90e2;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+

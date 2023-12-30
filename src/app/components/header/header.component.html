@@ -1,4 +1,8 @@
 <div class="header">
-  <mat-icon>shopping_cart</mat-icon>
-  <h1>Spesa App</h1>
+  <mat-icon *ngIf="!nomePerLogo;else img">shopping_cart</mat-icon>
+  <ng-template #img><img [src]="'assets/loghi/' + nomePerLogo + '.png'" alt="{{ nomePerLogo }}"/></ng-template>
+  <h3>{{ titolo }}</h3>
+  <div class="header-actions">
+    <button *ngIf="funzionalitaHome" (click)="tornaHome(numeroProdottiDaComprare)" class="torna-home">Torna alla Home</button>
+  </div>
 </div>

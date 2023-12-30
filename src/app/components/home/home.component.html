@@ -1,9 +1,10 @@
 <div class="container">
-  <app-header></app-header>
+  <app-header [titolo]="'SPESA APP'"></app-header>
   <div class="negozio-list">
     <button *ngFor="let negozio of negozi" class="btn-negozio" (click)="apriNegozio(negozio)">
       <img [src]="'assets/loghi/' + negozio.nome + '.png'" alt="{{ negozio.nome }}"/>
       <span>{{ negozio?.nome }}</span>
+      <span>({{ numeroProdottiDaComprare }})</span>
     </button>
   </div>
 </div>
