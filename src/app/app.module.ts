@@ -13,6 +13,9 @@ import {AngularFirestoreModule} from "@angular/fire/compat/firestore";
 import {AngularFireModule} from "@angular/fire/compat";
 import {environment} from "../environments/environments";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {ToastrModule} from "ngx-toastr";
 
 @NgModule({
   declarations: [
@@ -30,7 +33,9 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
         AngularFireModule.initializeApp(environment.firebase),
         AngularFirestoreModule,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
+        BrowserAnimationsModule,
+        ToastrModule.forRoot({closeButton: true}),
     ],
   providers: [],
   bootstrap: [AppComponent]

@@ -106,3 +106,17 @@ label {
   border-radius: 4px;
 }
 
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.container-save {
+  display: flex;
+  justify-content: space-between; /* Distribuisce gli elementi sulla riga */
+  align-items: center; /* Allinea verticalmente al centro */
+}
+
+.button-container {
+  margin-left: auto; /* Sposta il contenitore dei bottoni a destra */
+}

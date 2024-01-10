@@ -1,5 +1,5 @@
 <div class="container">
-  <app-header [titolo]="negozio?.nome" [nomePerLogo]="negozio?.nome" [funzionalitaHome]="true" [numeroProdottiDaComprare]="numeroProdottiDaComprare"></app-header>
+  <app-header [titolo]="negozio?.nome" [nomePerLogo]="negozio?.nome" [funzionalitaHome]="true"></app-header>
   <div>
     <form [formGroup]="listaSpesaForm" (ngSubmit)="aggiungiElemento()">
       <div style="display: flex; flex-direction: column">
@@ -9,8 +9,6 @@
           Il nome del prodotto da comprare è obbligatorio!
         </div>
       </div>
-
-      <pre>{{ listaSpesaForm.valid | json }}</pre>
 
       <div style="display: flex; flex-direction: column">
         <label for="quantita">Quantità</label>
@@ -24,7 +22,14 @@
     </form>
 
     <div *ngIf="listaSpesa.length > 0">
-      <h3>Lista della spesa</h3>
+      <div class="container-save">
+        <h3>Lista della spesa</h3>
+        <div class="button-container">
+          <!-- Aggiungi il bottone Salva modifiche qui -->
+          <button type="button" [style]="modificheNonSalvate ? 'background-color: #d90c0c;' : ''" [disabled]="!modificheNonSalvate" (click)="salvaModifiche()">Salva modifiche</button>
+        </div>
+      </div>
+
       <ul class="lista-spesa">
         <li *ngFor="let elemento of listaSpesa; let i = index" class="elemento-spesa">
           <span class="nome-prodotto" [ngClass]="{ 'comprato': elemento.comprato }">{{ elemento.nomeProdotto }} ( x{{elemento.quantita}} )</span>
@@ -37,5 +42,6 @@
         </li>
       </ul>
     </div>
+
   </div>
 </div>

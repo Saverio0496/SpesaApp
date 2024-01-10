@@ -4,7 +4,7 @@
     <button *ngFor="let negozio of negozi" class="btn-negozio" (click)="apriNegozio(negozio)">
       <img [src]="'assets/loghi/' + negozio.nome + '.png'" alt="{{ negozio.nome }}"/>
       <span>{{ negozio?.nome }}</span>
-      <span>({{ numeroProdottiDaComprare }})</span>
+      <span> ({{ numeroProdottiDaComprare[negozio.id] | async }}) </span>
     </button>
   </div>
 </div>

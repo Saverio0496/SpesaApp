@@ -11,7 +11,6 @@ export class HeaderComponent implements OnInit{
   @Input() titolo: string | undefined;
   @Input() nomePerLogo: string | undefined;
   @Input() funzionalitaHome: boolean = false;
-  @Input() numeroProdottiDaComprare: number = 0;
 
   constructor(private router: Router) {
   }
@@ -19,7 +18,7 @@ export class HeaderComponent implements OnInit{
   ngOnInit(): void {
   }
 
-  tornaHome(prodottiDaComprare: number) {
-    this.router.navigate([`/home`], { state: { prodottiDaComprare } });
+  tornaHome() {
+    this.router.navigate([`/home`]);
   }
 }
