@@ -76,4 +76,15 @@ export class NegozioService {
     });
     return Promise.resolve();
   }
+
+  salvaModificaProdottoListaSpesa(negozioId: number, indexProdotto: number, elemento: ListaSpesaDTO): Promise<void> {
+    const listaSpesaRef = this.firestore.collection(`Negozi/${negozioId}/listaSpesa`).doc('prodotti');
+
+    // Effettua una query per trovare il documento che corrisponde alle proprietà dell'elemento
+    listaSpesaRef.collection('prodotti').get().subscribe(querySnapshot => {
+      querySnapshot.docs[indexProdotto].ref.update(elemento);
+    })
+
+    return Promise.resolve();
+  }
 }

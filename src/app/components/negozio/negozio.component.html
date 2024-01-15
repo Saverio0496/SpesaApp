@@ -30,15 +30,35 @@
       </div>
 
       <ul class="lista-spesa">
-        <li *ngFor="let elemento of listaSpesa; let i = index" class="elemento-spesa">
-          <span class="nome-prodotto" [ngClass]="{ 'comprato': elemento.comprato }">{{ elemento.nomeProdotto }} ( x{{elemento.quantita}} )</span>
-          <div class="azioni">
-            <button (click)="toggleStatoElemento(i)">
-              {{ elemento.comprato ? 'Da comprare' : 'Comprato' }}
-            </button>
-            <button (click)="rimuoviElemento(i)">Elimina</button>
-          </div>
-        </li>
+        <mat-accordion *ngFor="let elemento of listaSpesa; let i = index">
+          <mat-expansion-panel #panel [disabled]="true">
+            <mat-expansion-panel-header style="padding: 0 10px !important;">
+              <mat-panel-title>
+                <span class="nome-prodotto" [ngClass]="{ 'comprato': elemento.comprato }">{{ elemento.nomeProdotto }} ( x{{elemento.quantita}} )</span>
+              </mat-panel-title>
+              <mat-panel-description class="container-description">
+                <div class="azioni">
+                  <button (click)="toggleStatoElemento(i)">
+                    {{ elemento.comprato ? 'Da comprare' : 'Comprato' }}
+                  </button>
+                  <button (click)="rimuoviElemento(i)">Elimina</button>
+                </div>
+              </mat-panel-description>
+              <div class="freccia" *ngIf="!panel.expanded" (click)="panel.open()">&#9660;</div>
+              <div class="freccia" style="transform: rotate(180deg)" *ngIf="panel.expanded" (click)="panel.close()">&#9660;</div>
+            </mat-expansion-panel-header>
+
+            <mat-divider></mat-divider>
+
+            <div style="margin-top: 10px; display: grid;">
+              <!-- Form di modifica -->
+              <input [(ngModel)]="elemento.nomeProdotto" placeholder="Nuovo nome">
+              <input [(ngModel)]="elemento.quantita" type="number" placeholder="Nuova quantità">
+              <button (click)="salvaModificheProdotto(negozio?.id!, i)">Salva Modifiche</button>
+            </div>
+
+          </mat-expansion-panel>
+        </mat-accordion>
       </ul>
     </div>
 

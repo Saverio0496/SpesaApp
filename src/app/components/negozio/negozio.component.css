@@ -30,11 +30,6 @@
   font-weight: bold;
 }
 
-.elemento-spesa .azioni {
-  display: flex;
-  gap: 8px;
-}
-
 form {
   display: flex;
   flex-direction: column;
@@ -119,4 +114,20 @@ button:disabled {
 
 .button-container {
   margin-left: auto; /* Sposta il contenitore dei bottoni a destra */
+}
+
+.container-description {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.freccia {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.azioni {
+  display: flex;
+  gap: 10px;
 }

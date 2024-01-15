@@ -84,4 +84,15 @@ export class NegozioComponent implements OnInit{
         });
     }
   }
+
+  salvaModificheProdotto(negozioId: number, indexProdotto: number) {
+    // Puoi inserire qui la logica per salvare le modifiche nel backend
+    this.negozioService.salvaModificaProdottoListaSpesa(negozioId, indexProdotto, this.listaSpesa[indexProdotto]).then(() => {
+      this.toastr.success('Modifiche salvate correttamente');
+      this.negozioService.getListaSpesa(negozioId).subscribe((listaSpesa: ListaSpesaDTO[]) => {
+        this.listaSpesa = listaSpesa;
+      })
+    })
+
+  }
 }
