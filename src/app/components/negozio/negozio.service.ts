@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {ListaSpesaDTO} from "../../dto/listaSpesaDTO";
-import {map, Observable} from "rxjs";
+import {map, Observable, of, switchMap} from "rxjs";
 import {NegozioDTO} from "../../dto/negozioDTO";
+import {AngularFireAuth} from "@angular/fire/compat/auth";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NegozioService {
 
-  constructor(private firestore: AngularFirestore) { }
+  constructor(private firestore: AngularFirestore,
+              private afAuth: AngularFireAuth) { }
 
   getNegozi(): Observable<any> {
     return this.firestore.collection('Negozi')
@@ -30,9 +32,21 @@ export class NegozioService {
   }
 
   getListaSpesa(negozioId: number): Observable<any> {
-    const listaSpesaRef = this.firestore.collection(`Negozi/${negozioId}/listaSpesa`).doc('prodotti').collection('prodotti');
+    return this.afAuth.authState.pipe(
+      switchMap((user) => {
+        if (user) {
+          const listaSpesaRef = this.firestore
+            .collection(`Negozi/${negozioId}/listaSpesa`)
+            .doc('prodotti')
+            .collection('prodotti', (ref) => ref.where('userId', '==', user.uid));
 
-    return listaSpesaRef.valueChanges();
+          return listaSpesaRef.valueChanges();
+        } else {
+          // Utente non autenticato, ritorna un Observable vuoto o un valore di default
+          return of([]);
+        }
+      })
+    );
   }
 
   aggiungiProdotto(negozioId: number, prodotto: ListaSpesaDTO): Promise<void> {

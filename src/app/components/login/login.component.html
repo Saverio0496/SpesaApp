@@ -1,0 +1,11 @@
+<div>
+  <h2>Login</h2>
+  <form (ngSubmit)="login()">
+    <label for="email">Email:</label>
+    <input type="email" id="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" required>
+    <button type="submit">Accedi</button>
+  </form>
+</div>
+<!--<div id="firebaseui-auth-container"></div>-->

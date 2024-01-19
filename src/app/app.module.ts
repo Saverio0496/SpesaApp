@@ -17,13 +17,33 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ToastrModule} from "ngx-toastr";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatDividerModule} from "@angular/material/divider";
+import {LoginComponent} from "./components/login/login.component";
+import {AuthService} from "./components/login/auth.service";
+import {AngularFireAuth, AngularFireAuthModule} from "@angular/fire/compat/auth";
+import {
+  firebase,
+  firebaseui,
+  FirebaseUIModule
+} from 'firebaseui-angular';
+
+const firebaseUiAuthConfig: firebaseui.auth.Config = {
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.EmailAuthProvider.PROVIDER_ID
+  ],
+  //tosUrl: '<your-tos-link>',
+  //privacyPolicyUrl: '<your-privacyPolicyUrl-link>',
+  credentialHelper: firebaseui.auth.CredentialHelper.NONE
+};
+
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     HomeComponent,
-    NegozioComponent
+    NegozioComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -33,6 +53,8 @@ import {MatDividerModule} from "@angular/material/divider";
     MatIconModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    AngularFireAuthModule,
+    FirebaseUIModule.forRoot(firebaseUiAuthConfig),
     ReactiveFormsModule,
     FormsModule,
     BrowserAnimationsModule,
@@ -40,7 +62,7 @@ import {MatDividerModule} from "@angular/material/divider";
     MatExpansionModule,
     MatDividerModule,
   ],
-  providers: [],
+  providers: [AuthService, AngularFireAuth],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

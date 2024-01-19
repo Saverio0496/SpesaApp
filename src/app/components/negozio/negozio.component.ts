@@ -4,6 +4,9 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {ListaSpesaDTO} from "../../dto/listaSpesaDTO";
 import {NegozioService} from "./negozio.service";
 import {ToastrService} from "ngx-toastr";
+import {AuthService} from "../login/auth.service";
+import {user} from "@angular/fire/auth";
+import {AngularFireAuth} from "@angular/fire/compat/auth";
 
 @Component({
   selector: 'app-negozio',
@@ -16,15 +19,18 @@ export class NegozioComponent implements OnInit{
   listaSpesaForm: FormGroup;
   listaSpesa: ListaSpesaDTO[] = [];
   modificheNonSalvate: boolean = false;
+  userId: string | undefined;
 
   constructor(private formBuilder: FormBuilder,
               private negozioService: NegozioService,
-              private toastr: ToastrService) {
+              private toastr: ToastrService,
+              private afAuth: AngularFireAuth) {
     this.listaSpesaForm = this.formBuilder.group({
       nomeProdotto: ['', Validators.required],
       quantita: [1, Validators.required],
       comprato: [false]
     });
+    this.afAuth.user.subscribe(res => this.userId = res?.uid);
   }
 
   ngOnInit(): void {
@@ -42,7 +48,8 @@ export class NegozioComponent implements OnInit{
       const oggettoDaAggiungere: ListaSpesaDTO = {
         nomeProdotto: nomeProdotto,
         quantita: quantita,
-        comprato: false
+        comprato: false,
+        userId: this.userId!
       }
       // Aggiungi l'elemento alla lista della spesa
       this.negozioService.aggiungiProdotto(this.negozio?.id!, oggettoDaAggiungere).then(() => {
