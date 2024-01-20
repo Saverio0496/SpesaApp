@@ -20,21 +20,16 @@ import {MatDividerModule} from "@angular/material/divider";
 import {LoginComponent} from "./components/login/login.component";
 import {AuthService} from "./components/login/auth.service";
 import {AngularFireAuth, AngularFireAuthModule} from "@angular/fire/compat/auth";
-import {
-  firebase,
-  firebaseui,
-  FirebaseUIModule
-} from 'firebaseui-angular';
 
-const firebaseUiAuthConfig: firebaseui.auth.Config = {
-  signInFlow: 'popup',
-  signInOptions: [
-    firebase.auth.EmailAuthProvider.PROVIDER_ID
-  ],
-  //tosUrl: '<your-tos-link>',
-  //privacyPolicyUrl: '<your-privacyPolicyUrl-link>',
-  credentialHelper: firebaseui.auth.CredentialHelper.NONE
-};
+// const firebaseUiAuthConfig: firebaseui.auth.Config = {
+//   signInFlow: 'popup',
+//   signInOptions: [
+//     firebase.auth.EmailAuthProvider.PROVIDER_ID
+//   ],
+//   //tosUrl: '<your-tos-link>',
+//   //privacyPolicyUrl: '<your-privacyPolicyUrl-link>',
+//   credentialHelper: firebaseui.auth.CredentialHelper.NONE
+// };
 
 
 @NgModule({
@@ -54,7 +49,7 @@ const firebaseUiAuthConfig: firebaseui.auth.Config = {
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule,
-    FirebaseUIModule.forRoot(firebaseUiAuthConfig),
+    // FirebaseUIModule.forRoot(firebaseUiAuthConfig),
     ReactiveFormsModule,
     FormsModule,
     BrowserAnimationsModule,

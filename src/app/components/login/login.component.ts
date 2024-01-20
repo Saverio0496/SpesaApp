@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {AuthService} from "./auth.service";
 import {Router} from "@angular/router";
-import {firebase, firebaseui} from "firebaseui-angular";
 import {ToastrService} from "ngx-toastr";
 
 @Component({

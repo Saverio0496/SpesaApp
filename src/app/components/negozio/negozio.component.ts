@@ -5,8 +5,7 @@ import {ListaSpesaDTO} from "../../dto/listaSpesaDTO";
 import {NegozioService} from "./negozio.service";
 import {ToastrService} from "ngx-toastr";
 import {AuthService} from "../login/auth.service";
-import {user} from "@angular/fire/auth";
-import {AngularFireAuth} from "@angular/fire/compat/auth";
+import firebase from "firebase/compat/app";
 
 @Component({
   selector: 'app-negozio',
@@ -23,21 +22,21 @@ export class NegozioComponent implements OnInit{
 
   constructor(private formBuilder: FormBuilder,
               private negozioService: NegozioService,
-              private toastr: ToastrService,
-              private afAuth: AngularFireAuth) {
+              private toastr: ToastrService) {
     this.listaSpesaForm = this.formBuilder.group({
       nomeProdotto: ['', Validators.required],
       quantita: [1, Validators.required],
       comprato: [false]
     });
-    this.afAuth.user.subscribe(res => this.userId = res?.uid);
+    this.userId = firebase.auth().currentUser?.uid;
+    this.negozio = history.state.negozio as NegozioDTO;
+    this.negozioService.getListaSpesa(this.negozio.id, this.userId!).subscribe((listaSpesa: ListaSpesaDTO[]) => {
+      this.listaSpesa = listaSpesa;
+    });
   }
 
   ngOnInit(): void {
-    this.negozio = history.state.negozio as NegozioDTO;
-    this.negozioService.getListaSpesa(this.negozio.id).subscribe((listaSpesa: ListaSpesaDTO[]) => {
-      this.listaSpesa = listaSpesa;
-    });
+
   }
 
   aggiungiElemento() {
@@ -49,10 +48,9 @@ export class NegozioComponent implements OnInit{
         nomeProdotto: nomeProdotto,
         quantita: quantita,
         comprato: false,
-        userId: this.userId!
       }
       // Aggiungi l'elemento alla lista della spesa
-      this.negozioService.aggiungiProdotto(this.negozio?.id!, oggettoDaAggiungere).then(() => {
+      this.negozioService.aggiungiProdotto(this.negozio?.id!, oggettoDaAggiungere, this.userId!).then(() => {
         this.toastr.success("Elemento aggiunto alla lista della spesa");
         this.listaSpesa.push(oggettoDaAggiungere);
         this.listaSpesaForm.reset();
@@ -79,7 +77,7 @@ export class NegozioComponent implements OnInit{
   salvaModifiche() {
     if (this.modificheNonSalvate) {
       // Salva la lista della spesa solo se ci sono modifiche non salvate
-      this.negozioService.salvaListaSpesa(this.negozio?.id!, this.listaSpesa).then(() => {
+      this.negozioService.salvaListaSpesa(this.negozio?.id!, this.listaSpesa, this.userId!).then(() => {
         this.toastr.success('Modifiche salvate correttamente');
         // Operazioni aggiuntive dopo il salvataggio
         this.modificheNonSalvate = false; // Resetta il flag dopo il salvataggio
@@ -94,9 +92,9 @@ export class NegozioComponent implements OnInit{
 
   salvaModificheProdotto(negozioId: number, indexProdotto: number) {
     // Puoi inserire qui la logica per salvare le modifiche nel backend
-    this.negozioService.salvaModificaProdottoListaSpesa(negozioId, indexProdotto, this.listaSpesa[indexProdotto]).then(() => {
+    this.negozioService.salvaModificaProdottoListaSpesa(negozioId, indexProdotto, this.listaSpesa[indexProdotto], this.userId!).then(() => {
       this.toastr.success('Modifiche salvate correttamente');
-      this.negozioService.getListaSpesa(negozioId).subscribe((listaSpesa: ListaSpesaDTO[]) => {
+      this.negozioService.getListaSpesa(negozioId, this.userId!).subscribe((listaSpesa: ListaSpesaDTO[]) => {
         this.listaSpesa = listaSpesa;
       })
     })

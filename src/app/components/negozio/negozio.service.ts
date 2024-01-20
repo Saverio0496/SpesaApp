@@ -1,17 +1,15 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AngularFirestore} from "@angular/fire/compat/firestore";
 import {ListaSpesaDTO} from "../../dto/listaSpesaDTO";
-import {map, Observable, of, switchMap} from "rxjs";
+import {map, Observable} from "rxjs";
 import {NegozioDTO} from "../../dto/negozioDTO";
-import {AngularFireAuth} from "@angular/fire/compat/auth";
 
 @Injectable({
   providedIn: 'root'
 })
 export class NegozioService {
 
-  constructor(private firestore: AngularFirestore,
-              private afAuth: AngularFireAuth) { }
+  constructor(private firestore: AngularFirestore) { }
 
   getNegozi(): Observable<any> {
     return this.firestore.collection('Negozi')
@@ -31,35 +29,25 @@ export class NegozioService {
       )
   }
 
-  getListaSpesa(negozioId: number): Observable<any> {
-    return this.afAuth.authState.pipe(
-      switchMap((user) => {
-        if (user) {
-          const listaSpesaRef = this.firestore
-            .collection(`Negozi/${negozioId}/listaSpesa`)
-            .doc('prodotti')
-            .collection('prodotti', (ref) => ref.where('userId', '==', user.uid));
+  getListaSpesa(negozioId: number, userId: string): Observable<any> {
+    const listaSpesaRef = this.firestore.collection(`Negozi/${negozioId}/listaSpesa`).doc('prodotti').collection(userId);
 
-          return listaSpesaRef.valueChanges();
-        } else {
-          // Utente non autenticato, ritorna un Observable vuoto o un valore di default
-          return of([]);
-        }
-      })
-    );
+    return listaSpesaRef.valueChanges();
   }
 
-  aggiungiProdotto(negozioId: number, prodotto: ListaSpesaDTO): Promise<void> {
+
+  aggiungiProdotto(negozioId: number, prodotto: ListaSpesaDTO, userId: string): Promise<void> {
     const listaSpesaRef = this.firestore.collection(`Negozi/${negozioId}/listaSpesa`).doc('prodotti');
 
     listaSpesaRef.get().subscribe(docSnapshot => {
       if (docSnapshot.exists) {
         // Se la sottocollezione 'listaSpesa' esiste, aggiungi il prodotto a 'prodotti'
-        listaSpesaRef.collection('prodotti').add(prodotto);
+        listaSpesaRef.collection(userId).add(prodotto);
       } else {
         // Se la sottocollezione 'listaSpesa' non esiste, creala e aggiungi il primo prodotto
         listaSpesaRef.set({}).then(() => {
-          listaSpesaRef.collection('prodotti').add(prodotto);
+          listaSpesaRef.collection(userId).add(prodotto);
+
         });
       }
     });
@@ -67,35 +55,37 @@ export class NegozioService {
     return Promise.resolve();
   }
 
-  salvaListaSpesa(negozioId: number, listaSpesa: ListaSpesaDTO[]): Promise<void> {
+  salvaListaSpesa(negozioId: number, listaSpesa: ListaSpesaDTO[], userId: string): Promise<void> {
     const listaSpesaRef = this.firestore.collection(`Negozi/${negozioId}/listaSpesa`).doc('prodotti');
 
     listaSpesaRef.get().subscribe(docSnapshot => {
       if (docSnapshot.exists) {
         // Se la sottocollezione esiste, svuotiamola prima di aggiungere gli elementi aggiornati
-        listaSpesaRef.collection('prodotti').get().subscribe(snapshot => {
+        listaSpesaRef.collection(userId).get().subscribe(snapshot => {
           snapshot.forEach(doc => {
             doc.ref.delete();
           });
         });
       } else {
         // Se la sottocollezione non esiste, la creiamo
-        listaSpesaRef.collection('prodotti').add({}); // Creiamo un documento vuoto per la sottocollezione
+        listaSpesaRef.collection(userId).add({}); // Creiamo un documento vuoto per la sottocollezione
       }
 
       // Aggiungiamo ogni prodotto come documento separato nella sottocollezione
       listaSpesa.forEach(prodotto => {
-        listaSpesaRef.collection('prodotti').add(prodotto);
+        // Utilizza l'userID come identificatore univoco per ogni elemento della lista
+        listaSpesaRef.collection(userId).add(prodotto);
       });
     });
+
     return Promise.resolve();
   }
 
-  salvaModificaProdottoListaSpesa(negozioId: number, indexProdotto: number, elemento: ListaSpesaDTO): Promise<void> {
+  salvaModificaProdottoListaSpesa(negozioId: number, indexProdotto: number, elemento: ListaSpesaDTO, userId: string): Promise<void> {
     const listaSpesaRef = this.firestore.collection(`Negozi/${negozioId}/listaSpesa`).doc('prodotti');
 
     // Effettua una query per trovare il documento che corrisponde alle proprietà dell'elemento
-    listaSpesaRef.collection('prodotti').get().subscribe(querySnapshot => {
+    listaSpesaRef.collection(userId).get().subscribe(querySnapshot => {
       querySnapshot.docs[indexProdotto].ref.update(elemento);
     })
 
