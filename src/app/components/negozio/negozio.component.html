@@ -4,7 +4,7 @@
     <form [formGroup]="listaSpesaForm" (ngSubmit)="aggiungiElemento()">
       <div style="display: flex; flex-direction: column">
         <label for="nomeProdotto">Nome Prodotto</label>
-        <input type="text" id="nomeProdotto" formControlName="nomeProdotto">
+        <input type="text" id="nomeProdotto" formControlName="nomeProdotto" [readonly]="salvataggioInCorso">
         <div class="error-message" *ngIf="listaSpesaForm.get('nomeProdotto')?.invalid && listaSpesaForm.get('nomeProdotto')?.touched">
           Il nome del prodotto da comprare è obbligatorio!
         </div>
@@ -12,7 +12,7 @@
 
       <div style="display: flex; flex-direction: column">
         <label for="quantita">Quantità</label>
-        <input type="number" id="quantita" formControlName="quantita" min="1">
+        <input type="number" id="quantita" formControlName="quantita" min="1" [readonly]="salvataggioInCorso">
         <div class="error-message" *ngIf="listaSpesaForm.get('quantita')?.invalid && listaSpesaForm.get('quantita')?.touched">
           Inserisci una quantità valida (minimo 1)!
         </div>
@@ -25,7 +25,7 @@
       <div class="container-save">
         <h3>Lista della spesa</h3>
         <div class="button-container">
-          <button type="button" [style]="modificheNonSalvate ? 'background-color: #d90c0c;' : ''" [disabled]="!modificheNonSalvate" (click)="salvaModifiche()">Salva modifiche</button>
+          <button type="button" [style]="modificheNonSalvate ? 'background-color: #d90c0c;' : ''" [disabled]="!modificheNonSalvate || salvataggioInCorso" (click)="salvaModifiche()">{{ salvataggioInCorso ? 'Salvataggio...' : 'Salva modifiche' }}</button>
         </div>
       </div>
 
@@ -38,10 +38,10 @@
               </mat-panel-title>
               <mat-panel-description class="container-description">
                 <div class="azioni">
-                  <button (click)="toggleStatoElemento(i)">
+                  <button (click)="toggleStatoElemento(i)" [disabled]="salvataggioInCorso">
                     {{ elemento.comprato ? 'Da comprare' : 'Comprato' }}
                   </button>
-                  <button (click)="rimuoviElemento(i)">Elimina</button>
+                  <button (click)="rimuoviElemento(i)" [disabled]="salvataggioInCorso">Elimina</button>
                 </div>
               </mat-panel-description>
               <div class="freccia" *ngIf="!panel.expanded" (click)="panel.open()">&#9660;</div>

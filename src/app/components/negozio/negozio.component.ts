@@ -6,6 +6,7 @@ import {NegozioService} from "./negozio.service";
 import {ToastrService} from "ngx-toastr";
 import {AuthService} from "../login/auth.service";
 import firebase from "firebase/compat/app";
+import {firstValueFrom} from "rxjs";
 
 @Component({
   selector: 'app-negozio',
@@ -18,6 +19,7 @@ export class NegozioComponent implements OnInit{
   listaSpesaForm: FormGroup;
   listaSpesa: ListaSpesaDTO[] = [];
   modificheNonSalvate: boolean = false;
+  salvataggioInCorso: boolean = false;
   userId: string | undefined;
 
   constructor(private formBuilder: FormBuilder,
@@ -30,8 +32,16 @@ export class NegozioComponent implements OnInit{
     });
     this.userId = firebase.auth().currentUser?.uid;
     this.negozio = history.state.negozio as NegozioDTO;
-    this.negozioService.getListaSpesa(this.negozio.id, this.userId!).subscribe((listaSpesa: ListaSpesaDTO[]) => {
+    firstValueFrom(
+      this.negozioService.getListaSpesa(
+        this.negozio!.id,
+        this.userId!
+      )
+    ).then(listaSpesa => {
       this.listaSpesa = listaSpesa;
+    }).catch(error => {
+      console.error('Errore caricamento prodotti:', error);
+      this.toastr.error('Errore durante il caricamento della lista');
     });
   }
 
@@ -40,64 +50,87 @@ export class NegozioComponent implements OnInit{
   }
 
   aggiungiElemento() {
-    if (this.listaSpesaForm.valid) {
-      const nomeProdotto = this.listaSpesaForm.value.nomeProdotto;
-      const quantita = this.listaSpesaForm.value.quantita;
-
-      const oggettoDaAggiungere: ListaSpesaDTO = {
-        nomeProdotto: nomeProdotto,
-        quantita: quantita,
-        comprato: false,
-      }
-      // Aggiungi l'elemento alla lista della spesa
-      this.negozioService.aggiungiProdotto(this.negozio?.id!, oggettoDaAggiungere, this.userId!).then(() => {
-        this.toastr.success("Elemento aggiunto alla lista della spesa");
-        this.listaSpesa.push(oggettoDaAggiungere);
-        this.listaSpesaForm.reset();
-        this.listaSpesaForm.get('quantita')?.setValue(1);
-      }).catch(error => {
-        this.toastr.error('Errore durante l\'aggiunta del prodotto');
-        // Gestione degli errori durante l'aggiunta di un prodotto
-        console.error('Errore durante l\'aggiunta del prodotto:', error);
-      });
+    if (this.salvataggioInCorso || this.listaSpesaForm.invalid) {
+      return;
     }
+
+    const oggettoDaAggiungere: ListaSpesaDTO = {
+      nomeProdotto: this.listaSpesaForm.value.nomeProdotto,
+      quantita: this.listaSpesaForm.value.quantita,
+      comprato: false
+    };
+
+    this.listaSpesa.push(oggettoDaAggiungere);
+
     this.modificheNonSalvate = true;
+
+    this.listaSpesaForm.reset({
+      nomeProdotto: '',
+      quantita: 1,
+      comprato: false
+    });
+
+    this.toastr.success('Prodotto aggiunto alla lista');
   }
 
   toggleStatoElemento(index: number) {
+    if (this.salvataggioInCorso) {
+      return;
+    }
+
     this.listaSpesa[index].comprato = !this.listaSpesa[index].comprato;
     this.modificheNonSalvate = true;
   }
 
   rimuoviElemento(index: number) {
+    if (this.salvataggioInCorso) {
+      return;
+    }
+
     this.listaSpesa.splice(index, 1);
     this.modificheNonSalvate = true;
   }
 
-  salvaModifiche() {
-    if (this.modificheNonSalvate) {
-      // Salva la lista della spesa solo se ci sono modifiche non salvate
-      this.negozioService.salvaListaSpesa(this.negozio?.id!, this.listaSpesa, this.userId!).then(() => {
-        this.toastr.success('Modifiche salvate correttamente');
-        // Operazioni aggiuntive dopo il salvataggio
-        this.modificheNonSalvate = false; // Resetta il flag dopo il salvataggio
-      })
-        .catch(error => {
-          this.toastr.error('Errore durante il salvataggio');
-          // Gestione degli errori durante il salvataggio
-          console.error('Errore durante il salvataggio:', error);
-        });
+  async salvaModifiche() {
+
+    if (!this.modificheNonSalvate || this.salvataggioInCorso) {
+      return;
+    }
+
+    this.salvataggioInCorso = true;
+
+    try {
+
+      await this.negozioService.salvaListaSpesa(
+        this.negozio!.id,
+        this.listaSpesa,
+        this.userId!
+      );
+
+      this.modificheNonSalvate = false;
+      this.toastr.success('Modifiche salvate correttamente');
+
+    } catch (error) {
+
+      console.error(error);
+      this.toastr.error('Errore durante il salvataggio');
+
+    } finally {
+
+      this.salvataggioInCorso = false;
+
     }
   }
 
   salvaModificheProdotto(negozioId: number, indexProdotto: number) {
-    // Puoi inserire qui la logica per salvare le modifiche nel backend
-    this.negozioService.salvaModificaProdottoListaSpesa(negozioId, indexProdotto, this.listaSpesa[indexProdotto], this.userId!).then(() => {
-      this.toastr.success('Modifiche salvate correttamente');
-      this.negozioService.getListaSpesa(negozioId, this.userId!).subscribe((listaSpesa: ListaSpesaDTO[]) => {
-        this.listaSpesa = listaSpesa;
-      })
-    })
 
+    if (this.salvataggioInCorso) {
+      return;
+    }
+
+    // Il prodotto è già stato modificato nell'array locale
+    this.modificheNonSalvate = true;
+
+    this.toastr.info('Modifica effettuata. Premi Salva modifiche per confermare.');
   }
 }
