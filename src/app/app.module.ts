@@ -53,7 +53,16 @@ import {AngularFireAuth, AngularFireAuthModule} from "@angular/fire/compat/auth"
     ReactiveFormsModule,
     FormsModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot({closeButton: true}),
+    ToastrModule.forRoot({
+      timeOut: 3500,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+      closeButton: true,
+      progressBar: true,
+      progressAnimation: 'decreasing',
+      easeTime: 250,
+      tapToDismiss: true
+    }),
     MatExpansionModule,
     MatDividerModule,
   ],

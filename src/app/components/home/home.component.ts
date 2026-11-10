@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NegozioDTO} from "../../dto/negozioDTO";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {Router} from "@angular/router";
 import {ListaSpesaDTO} from "../../dto/listaSpesaDTO";
 import {NegozioService} from "../negozio/negozio.service";
 import {map, Observable} from "rxjs";
@@ -19,8 +18,6 @@ export class HomeComponent implements OnInit {
   userId: string | undefined;
 
   constructor(private router: Router,
-              private firestore: AngularFirestore,
-              private route: ActivatedRoute,
               private negozioService: NegozioService) {
     this.userId = firebase.auth().currentUser?.uid;
   }
@@ -29,13 +26,21 @@ export class HomeComponent implements OnInit {
     this.recuperaNegoziDaDB();
   }
 
-  recuperaNegoziDaDB() {
-    this.negozioService.getNegozi().subscribe((negozi: NegozioDTO[]) => {
-      this.negozi = negozi;
-      this.negozi.forEach(negozio => {
-        this.getProdottiDaComprareForNegozio(negozio.id);
-      })
-    })
+  recuperaNegoziDaDB(): void {
+    this.negozioService.getNegozi().subscribe({
+      next: (negozi: NegozioDTO[]) => {
+        this.negozi = negozi;
+
+        negozi.forEach(negozio => {
+          if (!this.numeroProdottiDaComprare[negozio.id] && this.userId) {
+            this.getProdottiDaComprareForNegozio(negozio.id);
+          }
+        });
+      },
+      error: error => {
+        console.error('Errore caricamento negozi:', error);
+      }
+    });
   }
 
   apriNegozio(negozio: NegozioDTO) {

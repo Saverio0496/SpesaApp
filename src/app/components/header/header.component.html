@@ -1,8 +1,47 @@
-<div class="header">
-  <mat-icon *ngIf="!nomePerLogo;else img">shopping_cart</mat-icon>
-  <ng-template #img><img [src]="'assets/loghi/' + nomePerLogo + '.png'" alt="{{ nomePerLogo }}"/></ng-template>
-  <h3>{{ titolo }}</h3>
-  <div class="header-actions">
-    <button *ngIf="funzionalitaHome" (click)="tornaHome()" class="torna-home">Torna alla Home</button>
+<header class="header">
+  <div class="header-content">
+
+    <div class="header-brand">
+
+      <div class="logo-container">
+        <mat-icon *ngIf="!nomePerLogo; else img">
+          shopping_cart
+        </mat-icon>
+
+        <ng-template #img>
+          <img
+            [src]="'assets/loghi/' + nomePerLogo + '.png'"
+            [alt]="nomePerLogo">
+        </ng-template>
+      </div>
+
+      <h1 class="header-title">{{ titolo }}</h1>
+
+    </div>
+
+    <div class="header-actions">
+      <button
+        *ngIf="funzionalitaHome"
+        type="button"
+        class="torna-home"
+        aria-label="Torna alla Home"
+        (click)="tornaHome()">
+
+        <mat-icon>home</mat-icon>
+        <span>Torna alla Home</span>
+
+      </button>
+
+      <button
+        *ngIf="!nomePerLogo"
+        type="button"
+        class="logout-button"
+        aria-label="Esci dall'applicazione"
+        (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Esci</span>
+      </button>
+    </div>
+
   </div>
-</div>
+</header>

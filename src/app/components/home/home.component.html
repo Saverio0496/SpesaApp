@@ -1,10 +1,73 @@
-<div class="container">
+
+<div class="home-page">
+
   <app-header [titolo]="'SPESA APP'"></app-header>
-  <div class="negozio-list">
-    <button *ngFor="let negozio of negozi" class="btn-negozio" (click)="apriNegozio(negozio)">
-      <img [src]="'assets/loghi/' + negozio.nome + '.png'" alt="{{ negozio.nome }}"/>
-      <span>{{ negozio?.nome }}</span>
-      <span> ({{ numeroProdottiDaComprare[negozio.id] | async }}) </span>
-    </button>
-  </div>
+
+  <main class="home-content">
+
+    <section class="welcome-section">
+      <div class="welcome-icon">
+        <mat-icon>shopping_basket</mat-icon>
+      </div>
+
+      <div class="welcome-text">
+        <h1>La tua spesa, organizzata.</h1>
+        <p>Seleziona un negozio e gestisci facilmente i prodotti da acquistare.</p>
+      </div>
+    </section>
+
+    <section class="stores-section">
+
+      <div class="section-heading">
+        <div>
+          <h2>I tuoi negozi</h2>
+          <p>Le tue liste della spesa, tutte in un unico posto.</p>
+        </div>
+
+        <span class="stores-count">
+          {{ negozi.length }} negozi
+        </span>
+      </div>
+
+      <div class="negozio-grid">
+
+        <button
+          *ngFor="let negozio of negozi"
+          type="button"
+          class="negozio-card"
+          (click)="apriNegozio(negozio)">
+
+          <div class="negozio-logo">
+            <img
+              [src]="'assets/loghi/' + negozio.nome + '.png'"
+              [alt]="negozio.nome">
+          </div>
+
+          <div class="negozio-info">
+            <h3>{{ negozio.nome }}</h3>
+
+            <span class="product-count">
+              {{ (numeroProdottiDaComprare[negozio.id] | async) ?? 0 }}
+              prodotti da comprare
+            </span>
+          </div>
+
+          <div class="negozio-arrow">
+            <mat-icon>arrow_forward</mat-icon>
+          </div>
+
+        </button>
+
+      </div>
+
+      <div class="empty-stores" *ngIf="negozi.length === 0">
+        <mat-icon>storefront</mat-icon>
+        <h3>Nessun negozio disponibile</h3>
+        <p>Al momento non ci sono negozi da visualizzare.</p>
+      </div>
+
+    </section>
+
+  </main>
+
 </div>

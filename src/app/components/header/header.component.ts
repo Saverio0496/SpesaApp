@@ -1,5 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
+import firebase from "firebase/compat/app";
 
 @Component({
   selector: 'app-header',
@@ -16,6 +17,19 @@ export class HeaderComponent implements OnInit{
   }
 
   ngOnInit(): void {
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await firebase.auth().signOut();
+
+      await this.router.navigate(['/login'], {
+        replaceUrl: true
+      });
+
+    } catch (error) {
+      console.error('Errore durante il logout:', error);
+    }
   }
 
   tornaHome() {

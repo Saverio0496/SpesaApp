@@ -1,66 +1,183 @@
-<div class="container">
-  <app-header [titolo]="negozio?.nome" [nomePerLogo]="negozio?.nome" [funzionalitaHome]="true"></app-header>
-  <div>
-    <form [formGroup]="listaSpesaForm" (ngSubmit)="aggiungiElemento()">
-      <div style="display: flex; flex-direction: column">
-        <label for="nomeProdotto">Nome Prodotto</label>
-        <input type="text" id="nomeProdotto" formControlName="nomeProdotto" [readonly]="salvataggioInCorso">
-        <div class="error-message" *ngIf="listaSpesaForm.get('nomeProdotto')?.invalid && listaSpesaForm.get('nomeProdotto')?.touched">
-          Il nome del prodotto da comprare è obbligatorio!
-        </div>
+<div class="spesa-page">
+
+  <app-header
+    [titolo]="negozio?.nome"
+    [nomePerLogo]="negozio?.nome"
+    [funzionalitaHome]="true">
+  </app-header>
+
+  <main class="spesa-content">
+
+    <section class="add-card">
+      <div class="section-heading">
+        <h2>Aggiungi un prodotto</h2>
+        <p>Inserisci ciò che devi acquistare</p>
       </div>
 
-      <div style="display: flex; flex-direction: column">
-        <label for="quantita">Quantità</label>
-        <input type="number" id="quantita" formControlName="quantita" min="1" [readonly]="salvataggioInCorso">
-        <div class="error-message" *ngIf="listaSpesaForm.get('quantita')?.invalid && listaSpesaForm.get('quantita')?.touched">
-          Inserisci una quantità valida (minimo 1)!
+      <form [formGroup]="listaSpesaForm"
+            (ngSubmit)="aggiungiElemento()">
+
+        <div class="form-field">
+          <label for="nomeProdotto">Nome prodotto</label>
+          <input
+            id="nomeProdotto"
+            type="text"
+            formControlName="nomeProdotto"
+            placeholder="Es. Latte, pane, pasta..."
+            [readonly]="salvataggioInCorso">
+
+          <small class="error-message"
+                 *ngIf="listaSpesaForm.get('nomeProdotto')?.invalid &&
+                   listaSpesaForm.get('nomeProdotto')?.touched">
+            Inserisci il nome del prodotto.
+          </small>
         </div>
+
+        <div class="form-bottom">
+          <div class="form-field quantity-field">
+            <label for="quantita">Quantità</label>
+            <input
+              id="quantita"
+              type="number"
+              min="1"
+              formControlName="quantita"
+              [readonly]="salvataggioInCorso">
+          </div>
+
+          <button
+            class="btn-add"
+            type="submit"
+            [disabled]="salvataggioInCorso || listaSpesaForm.invalid">
+            <span>＋</span> Aggiungi
+          </button>
+        </div>
+
+      </form>
+    </section>
+
+    <section class="shopping-section">
+
+      <div class="list-heading">
+        <div>
+          <h2>Lista della spesa</h2>
+          <p>{{ listaSpesa.length }} prodotti nella lista</p>
+        </div>
+
+        <span class="unsaved-badge" *ngIf="modificheNonSalvate">
+          Da salvare
+        </span>
       </div>
 
-      <button type="submit">Aggiungi alla lista</button>
-    </form>
-
-    <div>
-      <div class="container-save">
-        <h3>Lista della spesa</h3>
-        <div class="button-container">
-          <button type="button" [style]="modificheNonSalvate ? 'background-color: #d90c0c;' : ''" [disabled]="!modificheNonSalvate || salvataggioInCorso" (click)="salvaModifiche()">{{ salvataggioInCorso ? 'Salvataggio...' : 'Salva modifiche' }}</button>
-        </div>
+      <div class="empty-state" *ngIf="listaSpesa.length === 0">
+        <div class="empty-icon">🛒</div>
+        <h3>La tua lista è vuota</h3>
+        <p>Aggiungi il primo prodotto per iniziare.</p>
       </div>
 
-      <ul class="lista-spesa">
-        <mat-accordion *ngFor="let elemento of listaSpesa; let i = index">
-          <mat-expansion-panel #panel [disabled]="true">
-            <mat-expansion-panel-header style="padding: 0 10px !important;">
-              <mat-panel-title>
-                <span class="nome-prodotto" [ngClass]="{ 'comprato': elemento.comprato }">{{ elemento.nomeProdotto }} ( x{{elemento.quantita}} )</span>
-              </mat-panel-title>
-              <mat-panel-description class="container-description">
-                <div class="azioni">
-                  <button (click)="toggleStatoElemento(i)" [disabled]="salvataggioInCorso">
-                    {{ elemento.comprato ? 'Da comprare' : 'Comprato' }}
-                  </button>
-                  <button (click)="rimuoviElemento(i)" [disabled]="salvataggioInCorso">Elimina</button>
-                </div>
-              </mat-panel-description>
-              <div class="freccia" *ngIf="!panel.expanded" (click)="panel.open()">&#9660;</div>
-              <div class="freccia" style="transform: rotate(180deg)" *ngIf="panel.expanded" (click)="panel.close()">&#9660;</div>
-            </mat-expansion-panel-header>
+      <div class="products-list">
 
-            <mat-divider></mat-divider>
+        <article
+          class="product-card"
+          *ngFor="let elemento of listaSpesa; let i = index"
+          [class.is-bought]="elemento.comprato">
 
-            <div style="margin-top: 10px; display: grid;">
-              <!-- Form di modifica -->
-              <input [(ngModel)]="elemento.nomeProdotto" placeholder="Nuovo nome">
-              <input [(ngModel)]="elemento.quantita" type="number" placeholder="Nuova quantità">
-              <button (click)="salvaModificheProdotto(negozio?.id!, i)">Salva Modifiche</button>
+          <div class="product-main">
+
+            <input
+              class="product-checkbox"
+              type="checkbox"
+              [checked]="elemento.comprato"
+              [disabled]="salvataggioInCorso"
+              (change)="toggleStatoElemento(i)"
+              [attr.aria-label]="'Segna come comprato: ' + elemento.nomeProdotto">
+
+            <div class="product-info">
+              <h3 [class.completed]="elemento.comprato">
+                {{ elemento.nomeProdotto }}
+              </h3>
+
+              <span class="product-quantity">
+                Quantità: {{ elemento.quantita }}
+              </span>
             </div>
 
-          </mat-expansion-panel>
-        </mat-accordion>
-      </ul>
-    </div>
+            <div class="product-actions">
 
+              <button
+                type="button"
+                class="icon-button edit-button"
+                [disabled]="salvataggioInCorso"
+                (click)="toggleModifica(i)"
+                aria-label="Modifica prodotto">
+                ✎
+              </button>
+
+              <button
+                type="button"
+                class="icon-button delete-button"
+                [disabled]="salvataggioInCorso"
+                (click)="rimuoviElemento(i)"
+                aria-label="Elimina prodotto">
+                ✕
+              </button>
+
+            </div>
+          </div>
+
+          <div
+            class="product-edit"
+            *ngIf="prodottoInModifica === i && prodottoTemporaneo">
+
+            <div class="form-field">
+              <label>Nome prodotto</label>
+
+              <input
+                type="text"
+                [(ngModel)]="prodottoTemporaneo.nomeProdotto"
+                [disabled]="salvataggioInCorso || caricamentoInCorso">
+            </div>
+
+            <div class="form-field">
+              <label>Quantità</label>
+
+              <input
+                type="number"
+                min="1"
+                step="1"
+                [(ngModel)]="prodottoTemporaneo.quantita"
+                [disabled]="salvataggioInCorso || caricamentoInCorso">
+            </div>
+
+            <button
+              type="button"
+              class="btn-confirm"
+              [disabled]="salvataggioInCorso || caricamentoInCorso"
+              (click)="confermaModificaProdotto(i)">
+              Conferma
+            </button>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <div class="save-bar" *ngIf="modificheNonSalvate">
+    <div class="save-bar-content">
+      <span>Hai modifiche da salvare</span>
+
+      <button
+        type="button"
+        class="btn-save"
+        [disabled]="salvataggioInCorso"
+        (click)="salvaModifiche()">
+        {{ salvataggioInCorso ? 'Salvataggio...' : 'Salva modifiche' }}
+      </button>
+    </div>
   </div>
+
 </div>

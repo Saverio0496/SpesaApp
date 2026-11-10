@@ -1,7 +1,8 @@
+
 import { Component } from '@angular/core';
-import {AuthService} from "./auth.service";
-import {Router} from "@angular/router";
-import {ToastrService} from "ngx-toastr";
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,43 +11,45 @@ import {ToastrService} from "ngx-toastr";
 })
 export class LoginComponent {
 
-  email = '';
-  password = '';
-  // ui: firebaseui.auth.AuthUI;
+  email: string = '';
+  password: string = '';
 
-  constructor(private authService: AuthService,
-              private router: Router,
-              private toastr: ToastrService) {
-    // const uiConfig = {
-    //   signInSuccessUrl: '/home',
-    //   signInOptions: [
-    //     firebase.auth.EmailAuthProvider.PROVIDER_ID
-    //   ],
-      // tosUrl: '/terms-of-service',
-      // privacyPolicyUrl: '/privacy-policy',
-    // };
+  mostraPassword: boolean = false;
+  loginInCorso: boolean = false;
 
-    // this.ui = new firebaseui.auth.AuthUI(firebase.auth());
-    //
-    // this.ui.start('#firebaseui-auth-container', uiConfig);
-  }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
 
-  ngOnInit() {
+  async login(): Promise<void> {
 
-  }
+    if (this.loginInCorso || !this.email.trim() || !this.password) {
+      return;
+    }
 
-  ngOnDestroy() {
-    // this.ui.delete();
-  }
+    this.loginInCorso = true;
 
-  login() {
-    this.authService.login(this.email, this.password)
-      .then(response => {
-        this.toastr.success("Accesso effettuato con successo");
-        this.router.navigate(['/home']); // Naviga verso la home dopo il login
-      })
-      .catch(error => {
-        this.toastr.error("Errore durante l\'accesso");
-      });
+    try {
+      await this.authService.login(
+        this.email.trim(),
+        this.password
+      );
+
+      this.toastr.success('Accesso effettuato con successo');
+
+      await this.router.navigate(['/home']);
+
+    } catch (error) {
+
+      console.error('Errore durante il login:', error);
+      this.toastr.error('Email o password non corretti');
+
+    } finally {
+
+      this.loginInCorso = false;
+
+    }
   }
 }

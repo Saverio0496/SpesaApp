@@ -1,11 +1,103 @@
-<div>
-  <h2>Login</h2>
-  <form (ngSubmit)="login()">
-    <label for="email">Email:</label>
-    <input type="email" id="email" [(ngModel)]="email" [ngModelOptions]="{standalone: true}" required>
-    <label for="password">Password:</label>
-    <input type="password" id="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}" required>
-    <button type="submit">Accedi</button>
-  </form>
+
+<div class="login-page">
+
+  <div class="login-container">
+
+    <div class="login-brand">
+      <div class="brand-icon">
+        <mat-icon>shopping_cart</mat-icon>
+      </div>
+
+      <h1>SpesaApp</h1>
+      <p>La tua spesa, sempre organizzata.</p>
+    </div>
+
+    <div class="login-card">
+
+      <div class="card-heading">
+        <h2>Bentornato!</h2>
+        <p>Accedi per gestire le tue liste della spesa.</p>
+      </div>
+
+      <form #loginForm="ngForm" (ngSubmit)="login()">
+
+        <div class="form-field">
+          <label for="email">Email</label>
+
+          <div class="input-wrapper">
+            <mat-icon>mail_outline</mat-icon>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Inserisci la tua email"
+              [(ngModel)]="email"
+              #emailInput="ngModel"
+              autocomplete="username"
+              email
+              required
+              [disabled]="loginInCorso">
+          </div>
+
+          <small class="error-message"
+                 *ngIf="emailInput.invalid && emailInput.touched">
+            Inserisci un indirizzo email valido.
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="password">Password</label>
+
+          <div class="input-wrapper">
+            <mat-icon>lock_outline</mat-icon>
+
+            <input
+              id="password"
+              name="password"
+              [type]="mostraPassword ? 'text' : 'password'"
+              placeholder="Inserisci la tua password"
+              [(ngModel)]="password"
+              autocomplete="current-password"
+              required
+              [disabled]="loginInCorso">
+
+            <button
+              type="button"
+              class="toggle-password"
+              [disabled]="loginInCorso"
+              [attr.aria-label]="mostraPassword ? 'Nascondi password' : 'Mostra password'"
+              (click)="mostraPassword = !mostraPassword">
+
+              <mat-icon>
+                {{ mostraPassword ? 'visibility_off' : 'visibility' }}
+              </mat-icon>
+
+            </button>
+          </div>
+        </div>
+
+        <button
+          class="btn-login"
+          type="submit"
+          [disabled]="loginForm.invalid || loginInCorso">
+
+          <mat-icon *ngIf="!loginInCorso">login</mat-icon>
+
+          <span>
+            {{ loginInCorso ? 'Accesso in corso...' : 'Accedi' }}
+          </span>
+
+        </button>
+
+      </form>
+
+    </div>
+
+    <p class="login-footer">
+      © SpesaApp · Organizza i tuoi acquisti
+    </p>
+
+  </div>
+
 </div>
-<!--<div id="firebaseui-auth-container"></div>-->

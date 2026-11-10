@@ -1,133 +1,317 @@
-.container {
-  height: 100vh;
-  background-color: #ffffff;
-  margin-top: 100px !important;
-  align-items: center !important;
-  justify-content: center !important;
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f5f7fa;
 }
 
-.comprato {
-  text-decoration: line-through;
-  color: grey;
+.spesa-page {
+  min-height: 100vh;
 }
 
-.lista-spesa {
-  list-style: none;
-  padding: 0;
+.spesa-content {
+  width: min(100% - 32px, 1100px);
+  margin: 0 auto;
+  padding: 40px 0 120px;
 }
 
-.elemento-spesa {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  margin-bottom: 8px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
+.add-card {
+  background: white;
+  border-radius: 18px;
+  padding: 26px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 32px;
 }
 
-.elemento-spesa .nome-prodotto {
-  font-weight: bold;
+.section-heading h2,
+.list-heading h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #202b3a;
+  margin: 0 0 6px;
 }
 
-form {
+.section-heading p,
+.list-heading p {
+  color: #8792a2;
+  margin: 0 0 22px;
+  font-size: 14px;
+}
+
+.form-field {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 300px;
-  margin: auto; /* Centra il form */
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Stile per i campi di input */
-form div {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-input:focus {
-  outline: none;
-  border-color: #4a90e2;
-}
-
-.error-message {
-  color: red;
-  font-size: 12px;
-}
-
-button {
-  padding: 8px 16px;
-  border-radius: 4px;
-  border: none;
-  background-color: #4a90e2;
-  color: white;
-  cursor: pointer;
-}
-
-input {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  gap: 8px;
   flex: 1;
 }
 
-label {
-  margin: 5px;
-  font-weight: bold;
+.form-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #425166;
 }
 
-.quantity-input {
+.form-field input {
+  border: 1px solid #dfe5ed;
+  background: #f9fafc;
+  border-radius: 10px;
+  padding: 13px 14px;
+  font-size: 15px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: 0.2s;
+}
+
+.form-field input:focus {
+  border-color: #23a46d;
+  box-shadow: 0 0 0 3px rgba(35, 164, 109, 0.1);
+}
+
+.form-bottom {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  gap: 14px;
+  margin-top: 18px;
 }
 
-.quantity-input button {
-  padding: 4px 8px;
+.quantity-field {
+  max-width: 140px;
+}
+
+.btn-add,
+.btn-save,
+.btn-confirm {
+  border: none;
+  border-radius: 10px;
+  padding: 13px 22px;
   font-size: 14px;
-  border: 1px solid #ccc;
+  font-weight: 600;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-.quantity-input input {
-  width: 40px;
-  text-align: center;
-  margin: 0 8px;
-  padding: 4px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.btn-add {
+  background: #22a66c;
+  color: white;
 }
 
-button:disabled {
-  background-color: #ccc;
+.btn-add:hover {
+  background: #188b58;
+}
+
+.btn-add:disabled,
+.btn-save:disabled,
+.btn-confirm:disabled,
+.icon-button:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.container-save {
+.list-heading {
   display: flex;
-  justify-content: space-between; /* Distribuisce gli elementi sulla riga */
-  align-items: center; /* Allinea verticalmente al centro */
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-.button-container {
-  margin-left: auto; /* Sposta il contenitore dei bottoni a destra */
+.list-heading p {
+  margin-bottom: 0;
 }
 
-.container-description {
-  margin-top: 5px;
-  margin-bottom: 5px;
+.unsaved-badge {
+  background: #fff0d7;
+  color: #ad6a0b;
+  padding: 7px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.freccia {
+.products-list {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-card {
+  background: white;
+  border: 1px solid #e9edf2;
+  border-radius: 14px;
+  padding: 18px;
+  transition: 0.2s;
+}
+
+.product-card:hover {
+  border-color: #b9d9c8;
+}
+
+.product-card.is-bought {
+  background: #f8fcf9;
+}
+
+.product-main {
+  display: flex;
   align-items: center;
+  gap: 14px;
 }
 
-.azioni {
+.product-checkbox {
+  width: 21px;
+  height: 21px;
+  accent-color: #22a66c;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.product-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.product-info h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #273345;
+  margin: 0 0 5px;
+  overflow-wrap: anywhere;
+}
+
+.product-info h3.completed {
+  text-decoration: line-through;
+  color: #9aa4b2;
+}
+
+.product-quantity {
+  font-size: 13px;
+  color: #8792a2;
+}
+
+.product-actions {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+}
+
+.icon-button {
+  border: none;
+  background: #f2f5f8;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.edit-button {
+  color: #51657b;
+}
+
+.delete-button {
+  color: #e05252;
+  background: #fff1f1;
+}
+
+.product-edit {
+  display: grid;
+  grid-template-columns: 1fr 130px auto;
+  gap: 12px;
+  align-items: end;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid #edf0f4;
+}
+
+.btn-confirm {
+  background: #edf5f0;
+  color: #21895d;
+}
+
+.empty-state {
+  text-align: center;
+  background: white;
+  padding: 45px 20px;
+  border-radius: 16px;
+  border: 1px dashed #dce4e9;
+}
+
+.empty-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  color: #8792a2;
+  margin: 0;
+}
+
+.save-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e8edf2;
+  padding: 15px 20px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+.save-bar-content {
+  max-width: 900px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
+.save-bar-content span {
+  font-size: 13px;
+  color: #697789;
+}
+
+.btn-save {
+  background: #22a66c;
+  color: white;
+}
+
+.error-message {
+  color: #d93025;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .spesa-content {
+    width: calc(100% - 24px);
+    padding: 24px 0 120px;
+  }
+
+  .add-card {
+    padding: 18px;
+  }
+
+  .product-card {
+    padding: 14px;
+  }
+
+  .product-edit {
+    grid-template-columns: 1fr;
+  }
+
+  .save-bar-content span {
+    display: none;
+  }
+
+  .btn-save {
+    width: 100%;
+  }
+
+  .section-heading h2,
+  .list-heading h2 {
+    font-size: 19px;
+  }
 }

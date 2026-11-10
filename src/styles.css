@@ -1,3 +1,17 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
 /* You can add global styles to this file, and also import other style files */
 .success-snackbar {
   position: fixed;
@@ -182,6 +196,218 @@ button.toast-close-button {
   background-color: #000000;
   opacity: 0.4;
 }
+
+
+/* =========================================
+   SPESAAPP - TOAST MODERNI
+   ========================================= */
+
+.toast-container {
+  z-index: 999999;
+}
+
+/* Card principale */
+
+.toast-container .ngx-toastr {
+  position: relative;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+
+  padding: 17px 42px 17px 56px;
+  margin-bottom: 12px;
+
+  background-color: #ffffff;
+  background-position: 17px center;
+  background-size: 24px;
+  background-repeat: no-repeat;
+
+  border: 1px solid #e9eef5;
+  border-left: 4px solid transparent;
+  border-radius: 14px;
+
+  color: #26354b;
+
+  box-shadow: 0 10px 35px rgba(30, 55, 95, 0.13);
+
+  transition: box-shadow 0.2s ease;
+}
+
+.toast-container .ngx-toastr:hover {
+  box-shadow: 0 14px 40px rgba(30, 55, 95, 0.18);
+}
+
+/* Titolo e messaggio */
+
+.toast-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1c2c43;
+  margin-bottom: 4px;
+}
+
+.toast-message {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #6e7d92;
+  overflow-wrap: anywhere;
+}
+
+.toast-message a,
+.toast-message label {
+  color: #287be5;
+}
+
+/* Colori per tipologia */
+
+.toast-container .toast-success {
+  border-left-color: #19a66a;
+}
+
+.toast-container .toast-info {
+  border-left-color: #287be5;
+}
+
+.toast-container .toast-warning {
+  border-left-color: #f0a52c;
+}
+
+.toast-container .toast-error {
+  border-left-color: #e34f56;
+}
+
+/* Le icone SVG esistenti sono bianche:
+   le coloriamo con un filtro CSS */
+
+.toast-container .toast-success {
+  background-image: none;
+}
+
+.toast-container .toast-info {
+  background-image: none;
+}
+
+.toast-container .toast-warning {
+  background-image: none;
+}
+
+.toast-container .toast-error {
+  background-image: none;
+}
+
+/* Icone semplici, senza librerie aggiuntive */
+
+.toast-container .ngx-toastr::before {
+  position: absolute;
+  left: 17px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.toast-container .toast-success::before {
+  content: "✓";
+  color: #19a66a;
+  background: #e5f8ef;
+}
+
+.toast-container .toast-info::before {
+  content: "i";
+  color: #287be5;
+  background: #e8f2ff;
+}
+
+.toast-container .toast-warning::before {
+  content: "!";
+  color: #c88713;
+  background: #fff2d8;
+}
+
+.toast-container .toast-error::before {
+  content: "×";
+  color: #e34f56;
+  background: #ffebed;
+}
+
+/* Pulsante di chiusura */
+
+.toast-container .toast-close-button {
+  position: absolute;
+  top: 12px;
+  right: 13px;
+
+  float: none;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+
+  color: #98a5b6;
+  text-shadow: none;
+}
+
+.toast-container .toast-close-button:hover {
+  color: #26354b;
+  opacity: 1;
+}
+
+/* Barra di avanzamento */
+
+.toast-progress {
+  height: 3px;
+  opacity: 0.9;
+  border-radius: 0 0 12px 12px;
+}
+
+.toast-success .toast-progress {
+  background-color: #19a66a;
+}
+
+.toast-info .toast-progress {
+  background-color: #287be5;
+}
+
+.toast-warning .toast-progress {
+  background-color: #f0a52c;
+}
+
+.toast-error .toast-progress {
+  background-color: #e34f56;
+}
+
+/* Posizione */
+
+.toast-top-right {
+  top: 20px;
+  right: 20px;
+}
+
+/* Smartphone */
+
+@media (max-width: 480px) {
+  .toast-top-right {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+  }
+
+  .toast-container .ngx-toastr {
+    width: 100%;
+    max-width: 100%;
+    padding: 15px 38px 15px 52px;
+    margin-bottom: 10px;
+  }
+}
+
+
 /* Responsive Design */
 @media all and (max-width: 240px) {
   .toast-container .ngx-toastr.div {
